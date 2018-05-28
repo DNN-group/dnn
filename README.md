@@ -1,7 +1,5 @@
 # dnn
 
-Theory:
-https://www.overleaf.com/16286254fwhrbnvwjsdw
+[Theory](https://www.overleaf.com/read/tdffcjgnrhmd)
 
-More
-https://isis.tu-berlin.de/course/view.php?id=13335
+[ISIS course](https://isis.tu-berlin.de/course/view.php?id=13335)
