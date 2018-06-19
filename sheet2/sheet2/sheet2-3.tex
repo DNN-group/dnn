@@ -297,9 +297,9 @@ already partitioned into training and test data. The data is normalized
 such that each dimension has mean 0 and variance 1.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}21}]:} \PY{k+kn}{import} \PY{n+nn}{utils}
-         
-         \PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{,}\PY{n}{Xtest}\PY{p}{,}\PY{n}{Ttest} \PY{o}{=} \PY{n}{utils}\PY{o}{.}\PY{n}{getBostonHousingData}\PY{p}{(}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{utils}
+        
+        \PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{,}\PY{n}{Xtest}\PY{p}{,}\PY{n}{Ttest} \PY{o}{=} \PY{n}{utils}\PY{o}{.}\PY{n}{getBostonHousingData}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 
 
@@ -325,15 +325,15 @@ this homework, we will replace it by variants of \texttt{layers.Linear}
 that incorporate weight norm penalties.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}22}]:} \PY{k+kn}{import} \PY{n+nn}{layers}
-         
-         \PY{k}{def} \PY{n+nf}{getarch}\PY{p}{(}\PY{n}{FirstLayerType}\PY{p}{)}\PY{p}{:}
-             \PY{n}{h} \PY{o}{=} \PY{l+m+mi}{100}
-             \PY{k}{return} \PY{n}{layers}\PY{o}{.}\PY{n}{Sequential}\PY{p}{(}\PY{p}{[}
-                 \PY{n}{FirstLayerType}\PY{p}{(}\PY{l+m+mi}{13}\PY{p}{,}\PY{n}{h}\PY{p}{,}\PY{n}{seed}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,}
-                 \PY{n}{layers}\PY{o}{.}\PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{,}
-                 \PY{n}{layers}\PY{o}{.}\PY{n}{Pooling}\PY{p}{(}\PY{n}{h}\PY{p}{)}
-             \PY{p}{]}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}2}]:} \PY{k+kn}{import} \PY{n+nn}{layers}
+        
+        \PY{k}{def} \PY{n+nf}{getarch}\PY{p}{(}\PY{n}{FirstLayerType}\PY{p}{)}\PY{p}{:}
+            \PY{n}{h} \PY{o}{=} \PY{l+m+mi}{100}
+            \PY{k}{return} \PY{n}{layers}\PY{o}{.}\PY{n}{Sequential}\PY{p}{(}\PY{p}{[}
+                \PY{n}{FirstLayerType}\PY{p}{(}\PY{l+m+mi}{13}\PY{p}{,}\PY{n}{h}\PY{p}{,}\PY{n}{seed}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,}
+                \PY{n}{layers}\PY{o}{.}\PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{,}
+                \PY{n}{layers}\PY{o}{.}\PY{n}{Pooling}\PY{p}{(}\PY{n}{h}\PY{p}{)}
+            \PY{p}{]}\PY{p}{)}
 \end{Verbatim}
 
 
@@ -345,23 +345,23 @@ instead the batch variant, where we follow the gradient of the true mean
 square error.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}23}]:} \PY{k+kn}{import} \PY{n+nn}{sklearn}\PY{o}{,}\PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics}
-         
-         \PY{k}{class} \PY{n+nc}{NeuralNetworkRegressor}\PY{p}{:}
-         
-             \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{arch}\PY{p}{)}\PY{p}{:} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{arch} \PY{o}{=} \PY{n}{arch}
-         
-             \PY{k}{def} \PY{n+nf}{fit}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{X}\PY{p}{,}\PY{n}{T}\PY{p}{,}\PY{n}{nbit}\PY{o}{=}\PY{l+m+mi}{10000}\PY{p}{)}\PY{p}{:}
-         
-                 \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{nbit}\PY{p}{)}\PY{p}{:}
-                     \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{backward}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{forward}\PY{p}{(}\PY{n}{X}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{T}\PY{p}{)}\PY{p}{)}
-                     \PY{k}{for} \PY{n}{l} \PY{o+ow}{in} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{layers}\PY{p}{:} \PY{n}{l}\PY{o}{.}\PY{n}{computepgrad}\PY{p}{(}\PY{p}{)}\PY{p}{;} \PY{n}{l}\PY{o}{.}\PY{n}{pgradstep}\PY{p}{(}\PY{l+m+mf}{0.01}\PY{p}{)}
-                         
-             \PY{k}{def} \PY{n+nf}{predict}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{X}\PY{p}{)}\PY{p}{:}
-                 \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{forward}\PY{p}{(}\PY{n}{X}\PY{p}{)}
-         
-             \PY{k}{def} \PY{n+nf}{score}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{X}\PY{p}{,}\PY{n}{T}\PY{p}{)}\PY{p}{:}
-                 \PY{k}{return} \PY{n}{sklearn}\PY{o}{.}\PY{n}{metrics}\PY{o}{.}\PY{n}{r2\PYZus{}score}\PY{p}{(}\PY{n}{T}\PY{p}{,}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X}\PY{p}{)}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}3}]:} \PY{k+kn}{import} \PY{n+nn}{sklearn}\PY{o}{,}\PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics}
+        
+        \PY{k}{class} \PY{n+nc}{NeuralNetworkRegressor}\PY{p}{:}
+        
+            \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{arch}\PY{p}{)}\PY{p}{:} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{arch} \PY{o}{=} \PY{n}{arch}
+        
+            \PY{k}{def} \PY{n+nf}{fit}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{X}\PY{p}{,}\PY{n}{T}\PY{p}{,}\PY{n}{nbit}\PY{o}{=}\PY{l+m+mi}{10000}\PY{p}{)}\PY{p}{:}
+        
+                \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{nbit}\PY{p}{)}\PY{p}{:}
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{backward}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{forward}\PY{p}{(}\PY{n}{X}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{T}\PY{p}{)}\PY{p}{)}
+                    \PY{k}{for} \PY{n}{l} \PY{o+ow}{in} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{layers}\PY{p}{:} \PY{n}{l}\PY{o}{.}\PY{n}{computepgrad}\PY{p}{(}\PY{p}{)}\PY{p}{;} \PY{n}{l}\PY{o}{.}\PY{n}{pgradstep}\PY{p}{(}\PY{l+m+mf}{0.01}\PY{p}{)}
+                        
+            \PY{k}{def} \PY{n+nf}{predict}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{X}\PY{p}{)}\PY{p}{:}
+                \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{forward}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+        
+            \PY{k}{def} \PY{n+nf}{score}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{X}\PY{p}{,}\PY{n}{T}\PY{p}{)}\PY{p}{:}
+                \PY{k}{return} \PY{n}{sklearn}\PY{o}{.}\PY{n}{metrics}\PY{o}{.}\PY{n}{r2\PYZus{}score}\PY{p}{(}\PY{n}{T}\PY{p}{,}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
 
 
@@ -374,33 +374,33 @@ regression model with RBF kernel. We use the scikit-learn implementation
 of these models, with their default parameters.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}24}]:} \PY{k+kn}{import} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{ensemble}\PY{o}{,}\PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{svm}
-         
-         \PY{n}{rfr} \PY{o}{=} \PY{n}{sklearn}\PY{o}{.}\PY{n}{ensemble}\PY{o}{.}\PY{n}{RandomForestRegressor}\PY{p}{(}\PY{p}{)}
-         \PY{n}{rfr}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}
-         
-         \PY{n}{svr} \PY{o}{=} \PY{n}{sklearn}\PY{o}{.}\PY{n}{svm}\PY{o}{.}\PY{n}{SVR}\PY{p}{(}\PY{p}{)}
-         \PY{n}{svr}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}
-         
-         \PY{n}{nnr} \PY{o}{=} \PY{n}{NeuralNetworkRegressor}\PY{p}{(}\PY{n}{getarch}\PY{p}{(}\PY{n}{layers}\PY{o}{.}\PY{n}{Linear}\PY{p}{)}\PY{p}{)}
-         \PY{n}{nnr}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}4}]:} \PY{k+kn}{import} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{ensemble}\PY{o}{,}\PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{svm}
+        
+        \PY{n}{rfr} \PY{o}{=} \PY{n}{sklearn}\PY{o}{.}\PY{n}{ensemble}\PY{o}{.}\PY{n}{RandomForestRegressor}\PY{p}{(}\PY{p}{)}
+        \PY{n}{rfr}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}
+        
+        \PY{n}{svr} \PY{o}{=} \PY{n}{sklearn}\PY{o}{.}\PY{n}{svm}\PY{o}{.}\PY{n}{SVR}\PY{p}{(}\PY{p}{)}
+        \PY{n}{svr}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}
+        
+        \PY{n}{nnr} \PY{o}{=} \PY{n}{NeuralNetworkRegressor}\PY{p}{(}\PY{n}{getarch}\PY{p}{(}\PY{n}{layers}\PY{o}{.}\PY{n}{Linear}\PY{p}{)}\PY{p}{)}
+        \PY{n}{nnr}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}25}]:} \PY{k}{def} \PY{n+nf}{pretty}\PY{p}{(}\PY{n}{name}\PY{p}{,}\PY{n}{model}\PY{p}{)}\PY{p}{:}
-             \PY{k}{return} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZgt{} }\PY{l+s+si}{\PYZpc{}10s}\PY{l+s+s1}{ | R2train: }\PY{l+s+si}{\PYZpc{}6.3f}\PY{l+s+s1}{ | R2test: }\PY{l+s+si}{\PYZpc{}6.3f}\PY{l+s+s1}{\PYZsq{}}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{name}\PY{p}{,}\PY{n}{model}\PY{o}{.}\PY{n}{score}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}\PY{p}{,}\PY{n}{model}\PY{o}{.}\PY{n}{score}\PY{p}{(}\PY{n}{Xtest}\PY{p}{,}\PY{n}{Ttest}\PY{p}{)}\PY{p}{)}
-         
-         \PY{n+nb}{print}\PY{p}{(}\PY{n}{pretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{RForest}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{rfr}\PY{p}{)}\PY{p}{)}
-         \PY{n+nb}{print}\PY{p}{(}\PY{n}{pretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SVR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{svr}\PY{p}{)}\PY{p}{)}
-         \PY{n+nb}{print}\PY{p}{(}\PY{n}{pretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NNreg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{nnr}\PY{p}{)}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}5}]:} \PY{k}{def} \PY{n+nf}{pretty}\PY{p}{(}\PY{n}{name}\PY{p}{,}\PY{n}{model}\PY{p}{)}\PY{p}{:}
+            \PY{k}{return} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZgt{} }\PY{l+s+si}{\PYZpc{}10s}\PY{l+s+s1}{ | R2train: }\PY{l+s+si}{\PYZpc{}6.3f}\PY{l+s+s1}{ | R2test: }\PY{l+s+si}{\PYZpc{}6.3f}\PY{l+s+s1}{\PYZsq{}}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{name}\PY{p}{,}\PY{n}{model}\PY{o}{.}\PY{n}{score}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}\PY{p}{,}\PY{n}{model}\PY{o}{.}\PY{n}{score}\PY{p}{(}\PY{n}{Xtest}\PY{p}{,}\PY{n}{Ttest}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{pretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{RForest}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{rfr}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{pretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SVR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{svr}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{pretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NNreg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{nnr}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{Verbatim}[commandchars=\\\{\}]
->    RForest | R2train:  0.973 | R2test:  0.863
+>    RForest | R2train:  0.970 | R2test:  0.845
 >        SVR | R2train:  0.913 | R2test:  0.758
->      NNreg | R2train:  0.978 | R2test:  0.856
+>      NNreg | R2train:  0.996 | R2test:  0.845
 
     \end{Verbatim}
 
@@ -450,26 +450,26 @@ instead.
 \end{itemize}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}26}]:} \PY{k}{def} \PY{n+nf}{WFrob}\PY{p}{(}\PY{n}{nn}\PY{p}{)}\PY{p}{:}
-             \PY{n}{W} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{layers}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{W}
-             \PY{k}{return} \PY{p}{(}\PY{n}{W}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{o}{.}\PY{l+m+mi}{5}
-         
-         \PY{k}{def} \PY{n+nf}{WMix}\PY{p}{(}\PY{n}{nn}\PY{p}{)}\PY{p}{:}
-             \PY{n}{W} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{layers}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{W}
-             \PY{k}{return} \PY{p}{(}\PY{l+m+mi}{1} \PY{o}{/} \PY{n}{W}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{p}{(}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{W}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{axis} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{0.5}
-         \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
-         
-         \PY{k}{def} \PY{n+nf}{Grad}\PY{p}{(}\PY{n}{nn}\PY{p}{,}\PY{n}{X}\PY{p}{)}\PY{p}{:}
-             \PY{n}{W} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{layers}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{W}
-             \PY{n}{B} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{layers}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{B}
-             \PY{k}{def} \PY{n+nf}{grad1}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{W}\PY{p}{,}\PY{n}{B}\PY{p}{)}\PY{p}{:}
-                 \PY{n}{s} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{W}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
-                 \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{W}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{:}
-                     \PY{n}{I} \PY{o}{=} \PY{n}{X}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{W}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{)} \PY{o}{+} \PY{n}{B}\PY{p}{[}\PY{n}{j}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mi}{0}
-                     \PY{n}{s} \PY{o}{+}\PY{o}{=} \PY{n}{W}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{*} \PY{n}{I}
-                 \PY{k}{return} \PY{p}{(}\PY{n}{s}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{0.5}
-             \PY{n}{ret} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{[}\PY{n}{grad1}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{W}\PY{p}{,}\PY{n}{B}\PY{p}{)} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{X}\PY{p}{]}\PY{p}{)}
-             \PY{k}{return} \PY{n}{ret}
+{\color{incolor}In [{\color{incolor}6}]:} \PY{k}{def} \PY{n+nf}{WFrob}\PY{p}{(}\PY{n}{nn}\PY{p}{)}\PY{p}{:}
+            \PY{n}{W} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{layers}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{W}
+            \PY{k}{return} \PY{p}{(}\PY{n}{W}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{o}{.}\PY{l+m+mi}{5}
+        
+        \PY{k}{def} \PY{n+nf}{WMix}\PY{p}{(}\PY{n}{nn}\PY{p}{)}\PY{p}{:}
+            \PY{n}{W} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{layers}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{W}
+            \PY{k}{return} \PY{p}{(}\PY{l+m+mi}{1} \PY{o}{/} \PY{n}{W}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{p}{(}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{W}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{axis} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{0.5}
+        \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+        
+        \PY{k}{def} \PY{n+nf}{Grad}\PY{p}{(}\PY{n}{nn}\PY{p}{,}\PY{n}{X}\PY{p}{)}\PY{p}{:}
+            \PY{n}{W} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{layers}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{W}
+            \PY{n}{B} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{arch}\PY{o}{.}\PY{n}{layers}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{B}
+            \PY{k}{def} \PY{n+nf}{grad1}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{W}\PY{p}{,}\PY{n}{B}\PY{p}{)}\PY{p}{:}
+                \PY{n}{s} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{W}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+                \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{W}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                    \PY{n}{I} \PY{o}{=} \PY{n}{X}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{W}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{)} \PY{o}{+} \PY{n}{B}\PY{p}{[}\PY{n}{j}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mi}{0}
+                    \PY{n}{s} \PY{o}{+}\PY{o}{=} \PY{n}{W}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{*} \PY{n}{I}
+                \PY{k}{return} \PY{p}{(}\PY{n}{s}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{0.5}
+            \PY{n}{ret} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{[}\PY{n}{grad1}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{W}\PY{p}{,}\PY{n}{B}\PY{p}{)} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{X}\PY{p}{]}\PY{p}{)}
+            \PY{k}{return} \PY{n}{ret}
 \end{Verbatim}
 
 
@@ -477,19 +477,21 @@ instead.
 after training the model.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}27}]:} \PY{k}{def} \PY{n+nf}{fullpretty}\PY{p}{(}\PY{n}{name}\PY{p}{,}\PY{n}{nn}\PY{p}{)}\PY{p}{:}
-             \PY{k}{return} \PY{n}{pretty}\PY{p}{(}\PY{n}{name}\PY{p}{,}\PY{n}{nn}\PY{p}{)} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ | WFrob: }\PY{l+s+si}{\PYZpc{}7.3f}\PY{l+s+s1}{ | WMix: }\PY{l+s+si}{\PYZpc{}7.3f}\PY{l+s+s1}{ | Grad: }\PY{l+s+si}{\PYZpc{}7.3f}\PY{l+s+s1}{\PYZsq{}}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{WFrob}\PY{p}{(}\PY{n}{nn}\PY{p}{)}\PY{p}{,}\PY{n}{WMix}\PY{p}{(}\PY{n}{nn}\PY{p}{)}\PY{p}{,}\PY{n}{Grad}\PY{p}{(}\PY{n}{nn}\PY{p}{,}\PY{n}{Xtest}\PY{p}{)}\PY{p}{)}
-         
-         \PY{n}{nnr} \PY{o}{=} \PY{n}{NeuralNetworkRegressor}\PY{p}{(}\PY{n}{getarch}\PY{p}{(}\PY{n}{layers}\PY{o}{.}\PY{n}{Linear}\PY{p}{)}\PY{p}{)}
-         \PY{n+nb}{print}\PY{p}{(}\PY{n}{fullpretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Before}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{nnr}\PY{p}{)}\PY{p}{)}
-         \PY{n}{nnr}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}
-         \PY{n+nb}{print}\PY{p}{(}\PY{n}{fullpretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{After}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{nnr}\PY{p}{)}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}7}]:} \PY{k}{global} \PY{n}{count} 
+        \PY{n}{count} \PY{o}{=} \PY{l+m+mi}{0}
+        \PY{k}{def} \PY{n+nf}{fullpretty}\PY{p}{(}\PY{n}{name}\PY{p}{,}\PY{n}{nn}\PY{p}{)}\PY{p}{:}
+            \PY{k}{return} \PY{n}{pretty}\PY{p}{(}\PY{n}{name}\PY{p}{,}\PY{n}{nn}\PY{p}{)} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ | WFrob: }\PY{l+s+si}{\PYZpc{}7.3f}\PY{l+s+s1}{ | WMix: }\PY{l+s+si}{\PYZpc{}7.3f}\PY{l+s+s1}{ | Grad: }\PY{l+s+si}{\PYZpc{}7.3f}\PY{l+s+s1}{\PYZsq{}}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{WFrob}\PY{p}{(}\PY{n}{nn}\PY{p}{)}\PY{p}{,}\PY{n}{WMix}\PY{p}{(}\PY{n}{nn}\PY{p}{)}\PY{p}{,}\PY{n}{Grad}\PY{p}{(}\PY{n}{nn}\PY{p}{,}\PY{n}{Xtest}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n}{nnr} \PY{o}{=} \PY{n}{NeuralNetworkRegressor}\PY{p}{(}\PY{n}{getarch}\PY{p}{(}\PY{n}{layers}\PY{o}{.}\PY{n}{Linear}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{fullpretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Before}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{nnr}\PY{p}{)}\PY{p}{)}
+        \PY{n}{nnr}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{fullpretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{After}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{nnr}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{Verbatim}[commandchars=\\\{\}]
 >     Before | R2train: -0.043 | R2test: -0.006 | WFrob:   9.834 | WMix:   7.845 | Grad:  13.562
->      After | R2train:  0.978 | R2test:  0.856 | WFrob:   8.188 | WMix:   4.214 | Grad:   8.821
+>      After | R2train:  0.996 | R2test:  0.845 | WFrob:  18.752 | WMix:  15.018 | Grad:  26.402
 
     \end{Verbatim}
 
@@ -525,14 +527,19 @@ validation set. Here, for simplicity, we omit this step.
 \end{itemize}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}28}]:} \PY{k+kn}{import} \PY{n+nn}{copy}
-         \PY{n}{LinearFrob} \PY{o}{=} \PY{n}{copy}\PY{o}{.}\PY{n}{deepcopy}\PY{p}{(}\PY{n}{layers}\PY{o}{.}\PY{n}{Linear}\PY{p}{)}
-         \PY{k}{def} \PY{n+nf}{computepgrad} \PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{lam} \PY{o}{=} \PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{10}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{:}
-             \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DW} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DZ}\PY{p}{)}\PY{o}{/}\PY{n+nb}{len}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{A}\PY{p}{)} \PY{o}{+} \PY{n}{lam} \PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{W}
-             \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DB} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DZ}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
-         \PY{n}{LinearFrob}\PY{o}{.}\PY{n}{computepgrad} \PY{o}{=} \PY{n}{computepgrad}
-         
-         \PY{c+c1}{\PYZsh{} \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
+{\color{incolor}In [{\color{incolor}8}]:} \PY{c+c1}{\PYZsh{} \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
+        \PY{c+c1}{\PYZsh{} TODO: Replace by your code}
+        \PY{c+c1}{\PYZsh{} \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
+        \PY{c+c1}{\PYZsh{} import solution}
+        \PY{c+c1}{\PYZsh{} LinearFrob = solution.LinearFrob}
+        \PY{k+kn}{import} \PY{n+nn}{copy}
+        \PY{n}{LinearFrob} \PY{o}{=} \PY{n}{copy}\PY{o}{.}\PY{n}{deepcopy}\PY{p}{(}\PY{n}{layers}\PY{o}{.}\PY{n}{Linear}\PY{p}{)}
+        \PY{k}{def} \PY{n+nf}{computepgradFrob} \PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{lam} \PY{o}{=} \PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{10}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{:}
+            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DW} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DZ}\PY{p}{)}\PY{o}{/}\PY{n+nb}{len}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{A}\PY{p}{)} \PY{o}{+} \PY{n}{lam} \PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{W}
+            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DB} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DZ}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+        \PY{n}{LinearFrob}\PY{o}{.}\PY{n}{computepgrad} \PY{o}{=} \PY{n}{computepgradFrob}
+        
+        \PY{c+c1}{\PYZsh{} \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
 \end{Verbatim}
 
 
@@ -540,13 +547,13 @@ validation set. Here, for simplicity, we omit this step.
 compares the performance with the previous models.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}29}]:} \PY{n}{nnfrob} \PY{o}{=} \PY{n}{NeuralNetworkRegressor}\PY{p}{(}\PY{n}{getarch}\PY{p}{(}\PY{n}{LinearFrob}\PY{p}{)}\PY{p}{)}
-         \PY{n}{nnfrob}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{nnfrob} \PY{o}{=} \PY{n}{NeuralNetworkRegressor}\PY{p}{(}\PY{n}{getarch}\PY{p}{(}\PY{n}{LinearFrob}\PY{p}{)}\PY{p}{)}
+        \PY{n}{nnfrob}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}30}]:} \PY{n+nb}{print}\PY{p}{(}\PY{n}{pretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{RForest}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{rfr}\PY{p}{)}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}10}]:} \PY{n+nb}{print}\PY{p}{(}\PY{n}{pretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{RForest}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{rfr}\PY{p}{)}\PY{p}{)}
          \PY{n+nb}{print}\PY{p}{(}\PY{n}{pretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SVR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{svr}\PY{p}{)}\PY{p}{)}
          \PY{n+nb}{print}\PY{p}{(}\PY{n}{fullpretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NN}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{nnr}\PY{p}{)}\PY{p}{)}
          \PY{n+nb}{print}\PY{p}{(}\PY{n}{fullpretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NN+Frob}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{nnfrob}\PY{p}{)}\PY{p}{)}
@@ -554,9 +561,9 @@ compares the performance with the previous models.
 
 
     \begin{Verbatim}[commandchars=\\\{\}]
->    RForest | R2train:  0.973 | R2test:  0.863
+>    RForest | R2train:  0.970 | R2test:  0.845
 >        SVR | R2train:  0.913 | R2test:  0.758
->         NN | R2train:  0.978 | R2test:  0.856 | WFrob:   8.188 | WMix:   4.214 | Grad:   8.821
+>         NN | R2train:  0.996 | R2test:  0.845 | WFrob:  18.752 | WMix:  15.018 | Grad:  26.402
 >    NN+Frob | R2train:  0.967 | R2test:  0.833 | WFrob:   5.119 | WMix:   4.139 | Grad:   7.263
 
     \end{Verbatim}
@@ -593,20 +600,21 @@ The differential of the Mix norm for element \(W_{l,k}\) is $
 \frac{\partial\|W\|_\text{Mix}^2}{\partial W_{l,k}} =
 2h^{-1}\sum_{i=1}^{h}W_{l,j}\text{sign}(W_{l,k})
 =
-2h^{-1}\|W_{l,:}\|_1 \text{sign}(W_{l,k})
+2h^{-1}W_{l,:}1\text{sign}(W_{l,k})
 $ thus
 \(\frac{\partial\|W\|_\text{Mix}^2}{\partial W}  = 2h^{-1}\tilde{W}_{(1)} 1_h^T \odot\text{sign}(W)\)
-with \({\tilde{W}}_{(1)} := (\|W_{1,:}\|_1, ..., \|W_{d,:}\|_1)^T\).\\
+with \(\tilde{W}_{(1)} := (\|W_{1,:}\|_1, ..., \|W_{d,:}\|_1)^T\).
 Reminder: \(\odot\) represents the operator for the elemente-wise matrix
 multiplication.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}31}]:} \PY{n}{LinearMix} \PY{o}{=} \PY{n}{copy}\PY{o}{.}\PY{n}{deepcopy}\PY{p}{(}\PY{n}{layers}\PY{o}{.}\PY{n}{Linear}\PY{p}{)}
-         \PY{k}{def} \PY{n+nf}{computepgrad} \PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{lam} \PY{o}{=} \PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{10}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{:}
+{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{LinearMix} \PY{o}{=} \PY{n}{copy}\PY{o}{.}\PY{n}{deepcopy}\PY{p}{(}\PY{n}{layers}\PY{o}{.}\PY{n}{Linear}\PY{p}{)}
+         \PY{k}{def} \PY{n+nf}{computepgradMix} \PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}\PY{n}{lam} \PY{o}{=} \PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{10}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{:}
              \PY{n}{\PYZus{}W2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{outer}\PY{p}{(}\PY{n+nb}{abs}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{W}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{axis}\PY{o}{=} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,}\PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{W}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)}
-             \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DW} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DZ}\PY{p}{)}\PY{o}{/}\PY{n+nb}{len}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{A}\PY{p}{)} \PY{o}{+} \PY{n}{lam} \PY{o}{*} \PY{l+m+mi}{2} \PY{o}{/} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{W}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{multiply}\PY{p}{(}\PY{n}{\PYZus{}W2}\PY{p}{,}\PY{n}{np}\PY{o}{.}\PY{n}{sign}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{W}\PY{p}{)}\PY{p}{)}
+             \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DW} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{,}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DZ}\PY{p}{)}\PY{o}{/}\PY{n+nb}{len}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{A}\PY{p}{)} 
+             \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DW}\PY{o}{+}\PY{o}{=} \PY{n}{lam} \PY{o}{*} \PY{l+m+mi}{2} \PY{o}{/} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{W}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{multiply}\PY{p}{(}\PY{n}{\PYZus{}W2}\PY{p}{,}\PY{n}{np}\PY{o}{.}\PY{n}{sign}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{W}\PY{p}{)}\PY{p}{)}
              \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DB} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{DZ}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
-         \PY{n}{LinearMix}\PY{o}{.}\PY{n}{computepgrad} \PY{o}{=} \PY{n}{computepgrad}
+         \PY{n}{LinearMix}\PY{o}{.}\PY{n}{computepgrad} \PY{o}{=} \PY{n}{computepgradMix}
 \end{Verbatim}
 
 
@@ -614,13 +622,13 @@ multiplication.
 compares the performance with the previous models.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}32}]:} \PY{n}{nnmix} \PY{o}{=} \PY{n}{NeuralNetworkRegressor}\PY{p}{(}\PY{n}{getarch}\PY{p}{(}\PY{n}{LinearMix}\PY{p}{)}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}12}]:} \PY{n}{nnmix} \PY{o}{=} \PY{n}{NeuralNetworkRegressor}\PY{p}{(}\PY{n}{getarch}\PY{p}{(}\PY{n}{LinearMix}\PY{p}{)}\PY{p}{)}
          \PY{n}{nnmix}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{Xtrain}\PY{p}{,}\PY{n}{Ttrain}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}33}]:} \PY{n+nb}{print}\PY{p}{(}\PY{n}{pretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{RForest}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{rfr}\PY{p}{)}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}13}]:} \PY{n+nb}{print}\PY{p}{(}\PY{n}{pretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{RForest}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{rfr}\PY{p}{)}\PY{p}{)}
          \PY{n+nb}{print}\PY{p}{(}\PY{n}{pretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SVR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{svr}\PY{p}{)}\PY{p}{)}
          \PY{n+nb}{print}\PY{p}{(}\PY{n}{fullpretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NN}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{nnr}\PY{p}{)}\PY{p}{)}
          \PY{n+nb}{print}\PY{p}{(}\PY{n}{fullpretty}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NN+Frob}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{nnfrob}\PY{p}{)}\PY{p}{)}
@@ -629,9 +637,9 @@ compares the performance with the previous models.
 
 
     \begin{Verbatim}[commandchars=\\\{\}]
->    RForest | R2train:  0.973 | R2test:  0.863
+>    RForest | R2train:  0.970 | R2test:  0.845
 >        SVR | R2train:  0.913 | R2test:  0.758
->         NN | R2train:  0.978 | R2test:  0.856 | WFrob:   8.188 | WMix:   4.214 | Grad:   8.821
+>         NN | R2train:  0.996 | R2test:  0.845 | WFrob:  18.752 | WMix:  15.018 | Grad:  26.402
 >    NN+Frob | R2train:  0.967 | R2test:  0.833 | WFrob:   5.119 | WMix:   4.139 | Grad:   7.263
 >     NN+Mix | R2train:  0.978 | R2test:  0.856 | WFrob:   8.188 | WMix:   4.214 | Grad:   8.821
 
