@@ -1,3 +1,5 @@
 
 *.pag
 *.dir
+*.tar.gz
+cifar-10-batches-mat
